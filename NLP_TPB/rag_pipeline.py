@@ -17,24 +17,20 @@ load_dotenv()
 API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
-# Inisialisasi ChromaDB client (in-memory untuk kemudahan eksekusi)
+# 1. Inisialisasi Multilingual Embedding
 sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
     model_name="paraphrase-multilingual-MiniLM-L12-v2"
 )
 
-chroma_client = chromadb.Client()
+# 2. Inisialisasi Persistent Database ChromaDB
+chroma_client = chromadb.PersistentClient(path="./chroma_db")
 collection_name = "uu_lalu_lintas"
 
-try:
-    chroma_client.delete_collection(name=collection_name)
-except Exception:
-    pass
-
-vector_collection = chroma_client.create_collection(
+# 3. Ambil atau Buat Koleksi Vektor
+vector_collection = chroma_client.get_or_create_collection(
     name=collection_name, 
     embedding_function=sentence_transformer_ef
 )
-_is_db_populated = False
 
 def is_placeholder_key(key: str) -> bool:
     if not key:
@@ -73,7 +69,7 @@ def load_knowledge(path: str) -> str:
 
 
 def split_text(text: str, chunk_size: int = 1000, overlap: int = 200) -> List[str]:
-    """Memotong teks dengan ukuran lebih besar untuk dokumen hukum."""
+    """Memotong teks menggunakan metode sliding window untuk konteks yang lebih utuh."""
     chunks = []
     start = 0
     text_length = len(text)
@@ -87,32 +83,31 @@ def split_text(text: str, chunk_size: int = 1000, overlap: int = 200) -> List[st
 
 
 def populate_vector_db(knowledge_text: str):
-    """Memasukkan chunk teks ke dalam ChromaDB sebagai vektor embedding."""
-    global _is_db_populated
-    if _is_db_populated:
+    """Memasukkan chunk ke ChromaDB hanya jika database masih kosong."""
+    if vector_collection.count() > 0:
         return
         
+    print("Memproses embedding dokumen perdana (mungkin memakan waktu beberapa menit)...")
     chunks = split_text(knowledge_text)
     
     # ChromaDB membutuhkan ID unik untuk setiap dokumen
     ids = [f"chunk_{i}" for i in range(len(chunks))]
     
-    # Menambahkan ke koleksi (ChromaDB otomatis melakukan embedding menggunakan model default-nya)
     vector_collection.add(
         documents=chunks,
         ids=ids
     )
-    _is_db_populated = True
+    print("Embedding selesai dan berhasil disimpan ke disk lokal!")
 
 
 def retrieve_context(claim: str, knowledge_text: str) -> str:
     """Mengambil konteks menggunakan Vector Search (Cosine Similarity)."""
     populate_vector_db(knowledge_text)
     
-    # Tarik 7 chunk paling relevan, bukan cuma 3
+    # Mencari 7 chunk paling relevan berdasarkan semantic similarity
     results = vector_collection.query(
         query_texts=[claim],
-        n_results=7 
+        n_results=7
     )
     
     if results["documents"] and len(results["documents"][0]) > 0:
@@ -121,14 +116,13 @@ def retrieve_context(claim: str, knowledge_text: str) -> str:
     
     return knowledge_text
 
-
 def build_prompt(claim: str, context: str) -> str:
     return f"""Anda adalah sistem fact-checking untuk peraturan lalu lintas berdasarkan dokumen UU Nomor 22 Tahun 2009.
 
 Tugas Anda:
 1. Tentukan apakah klaim berikut BENAR, SALAH, atau TIDAK CUKUP INFORMASI.
 2. Berikan penjelasan singkat berdasarkan konteks yang tersedia.
-3. Jika klaim tidak dapat dipastikan, gunakan TIDAK CUKUP INFORMASI.
+3. Jika klaim tidak dapat dipastikan dari dokumen, gunakan TIDAK CUKUP INFORMASI.
 
 Klaim: {claim}
 
@@ -165,7 +159,6 @@ def call_gemini(prompt: str) -> str:
 
 
 def fallback_rule_based_check(claim: str, context: str) -> str:
-    # Fallback yang lebih aman, tidak melakukan hardcode substring yang rentan salah konteks
     return "Hasil: TIDAK CUKUP INFORMASI\nPenjelasan: API LLM sedang tidak tersedia. Sistem gagal melakukan verifikasi mendalam terhadap klaim ini."
 
 

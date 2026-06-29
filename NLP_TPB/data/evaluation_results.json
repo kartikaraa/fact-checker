@@ -3,60 +3,60 @@
         "claim": "Setiap pengendara sepeda motor dan penumpangnya wajib mengenakan helm yang memenuhi Standar Nasional Indonesia (SNI).",
         "prediction": "BENAR",
         "label": "BENAR",
-        "explanation": "Label: BENAR\n\nPenjelasan: Berdasarkan konteks dokumen yang diberikan, khususnya pada Pasal 106 ayat (8), disebutkan secara eksplisit bahwa \"Setiap orang yang mengemudikan Sepeda Motor dan Penumpang Sepeda Motor wajib mengenakan helm yang memenuhi standar nasional Indonesia.\""
+        "explanation": "Hasil: BENAR\n\nPenjelasan: Berdasarkan dokumen yang disediakan, khususnya pada Pasal 106 ayat (8), disebutkan secara eksplisit bahwa: \"Setiap orang yang mengemudikan Sepeda Motor dan Penumpang Sepeda Motor wajib mengenakan helm yang memenuhi standar nasional Indonesia.\""
     },
     {
         "claim": "Pengemudi mobil diperbolehkan menggunakan telepon genggam saat berkendara asalkan hanya untuk mengecek peta navigasi.",
         "prediction": "TIDAK CUKUP INFORMASI",
         "label": "SALAH",
-        "explanation": "Label: TIDAK CUKUP INFORMASI\n\nPenjelasan: Berdasarkan potongan dokumen UU Nomor 22 Tahun 2009 yang Anda berikan, tidak terdapat pasal yang secara spesifik mengatur atau melarang penggunaan telepon genggam saat berkendara. Oleh karena itu, informasi yang tersedia dalam teks tersebut tidak cukup untuk memverifikasi klaim tersebut."
+        "explanation": "Hasil: TIDAK CUKUP INFORMASI\n\nPenjelasan: Berdasarkan potongan dokumen UU Nomor 22 Tahun 2009 yang diberikan, tidak terdapat pasal atau ayat yang secara spesifik mengatur mengenai larangan atau izin penggunaan telepon genggam saat berkendara, baik untuk keperluan navigasi maupun keperluan lainnya. Dokumen yang tersedia hanya memuat aturan mengenai kewajiban mematuhi rambu, penggunaan sabuk keselamatan, penggunaan helm, dan tata cara berlalu lintas lainnya."
     },
     {
         "claim": "Setiap orang yang mengemudikan kendaraan bermotor di jalan wajib memiliki Surat Izin Mengemudi (SIM) yang sesuai dengan jenis kendaraan yang dikemudikan.",
-        "prediction": "TIDAK CUKUP INFORMASI",
+        "prediction": "BENAR",
         "label": "BENAR",
-        "explanation": "Label: TIDAK CUKUP INFORMASI\n\nPenjelasan: Meskipun dokumen yang diberikan menyebutkan kewajiban pengemudi untuk menunjukkan Surat Izin Mengemudi (SIM) pada Pasal 106 ayat (5) huruf b dan adanya sanksi bagi yang tidak dapat menunjukkannya, dokumen tersebut tidak secara eksplisit menyatakan aturan bahwa SIM harus \"sesuai dengan jenis kendaraan yang dikemudikan\". Informasi mengenai klasifikasi atau kesesuaian jenis SIM dengan jenis kendaraan tidak tercantum dalam potongan teks yang disediakan."
+        "explanation": "Hasil: BENAR\n\nPenjelasan: Berdasarkan dokumen yang disediakan, Pasal 84 secara eksplisit mengatur mengenai klasifikasi Surat Izin Mengemudi (SIM) yang dapat digunakan untuk mengemudikan jenis kendaraan tertentu (misalnya, SIM A Umum dapat berlaku untuk kendaraan yang seharusnya menggunakan SIM A, dan seterusnya). Hal ini menunjukkan bahwa sistem hukum dalam dokumen tersebut mewajibkan pengemudi memiliki SIM yang sesuai dengan jenis kendaraan yang dikemudikan, serta mengatur batasan penggunaan SIM tersebut berdasarkan jenis kendaraannya. Selain itu, Pasal 266 ayat (1) huruf a menegaskan bahwa SIM merupakan salah satu dokumen yang wajib ditunjukkan saat pemeriksaan kendaraan di jalan."
     },
     {
         "claim": "Pengendara sepeda motor tidak wajib menyalakan lampu utama pada siang hari jika cuaca sangat cerah.",
         "prediction": "SALAH",
         "label": "SALAH",
-        "explanation": "Label: SALAH\n\nPenjelasan: Berdasarkan Pasal 107 ayat (2) dalam dokumen tersebut, pengemudi sepeda motor diwajibkan menyalakan lampu utama pada siang hari. Dokumen tersebut tidak memberikan pengecualian bagi pengendara sepeda motor untuk mematikan lampu utama meskipun cuaca sedang cerah. Selain itu, Pasal 294 menegaskan adanya sanksi pidana bagi pengemudi sepeda motor yang tidak menyalakan lampu utama pada siang hari."
+        "explanation": "Hasil: SALAH\n\nPenjelasan: Berdasarkan Pasal 107 ayat (2) UU Nomor 22 Tahun 2009, pengemudi sepeda motor diwajibkan menyalakan lampu utama pada siang hari. Dokumen tersebut tidak memberikan pengecualian kewajiban menyalakan lampu utama berdasarkan kondisi cuaca (seperti cuaca cerah). Selain itu, Pasal 293 ayat (2) menegaskan adanya sanksi pidana bagi setiap orang yang mengemudikan sepeda motor di jalan tanpa menyalakan lampu utama pada siang hari."
     },
     {
         "claim": "Pejalan kaki memiliki hak utama atau prioritas saat menyeberang jalan di tempat penyeberangan (zebra cross).",
         "prediction": "TIDAK CUKUP INFORMASI",
         "label": "BENAR",
-        "explanation": "Label: TIDAK CUKUP INFORMASI\n\nPenjelasan: Berdasarkan potongan dokumen UU Nomor 22 Tahun 2009 yang Anda berikan, hanya terdapat penjelasan mengenai definisi \"tempat penyeberangan\" pada Pasal 45 ayat (1) huruf c, yang menyebutkan bahwa tempat penyeberangan dapat berupa zebra cross, jembatan, atau terowongan. Dokumen tersebut tidak memuat pasal yang secara spesifik mengatur mengenai hak utama atau prioritas pejalan kaki saat menggunakan fasilitas penyeberangan tersebut."
+        "explanation": "Hasil: TIDAK CUKUP INFORMASI\n\nPenjelasan: Berdasarkan dokumen yang diberikan, tidak terdapat pasal yang secara eksplisit menyatakan bahwa pejalan kaki memiliki \"hak utama\" atau \"prioritas\" untuk didahulukan oleh pengemudi kendaraan saat menyeberang di *zebra cross*. Dokumen hanya menyebutkan kewajiban pejalan kaki untuk menyeberang di tempat yang telah ditentukan (Pasal 132 ayat 1) dan kewajiban pejalan kaki untuk memperhatikan keselamatan dirinya sendiri (Pasal 132 ayat 2). Daftar pengguna jalan yang memperoleh \"hak utama\" (Pasal 134) juga tidak mencantumkan pejalan kaki."
     },
     {
         "claim": "Kendaraan pribadi diperbolehkan memasang dan menggunakan lampu isyarat (strobo) berwarna biru saat mengantar orang sakit.",
         "prediction": "SALAH",
         "label": "SALAH",
-        "explanation": "Label: SALAH\n\nPenjelasan: Berdasarkan Pasal 59 ayat (5) huruf a dalam UU Nomor 22 Tahun 2009, lampu isyarat berwarna biru hanya diperuntukkan bagi kendaraan bermotor petugas Kepolisian Negara Republik Indonesia. Kendaraan pribadi tidak termasuk dalam kategori kendaraan yang diperbolehkan menggunakan lampu isyarat (strobo) berwarna biru, meskipun dalam keadaan darurat seperti mengantar orang sakit."
+        "explanation": "Hasil: **SALAH**\n\nPenjelasan: Berdasarkan Pasal 59 ayat (5) huruf a dan b UU Nomor 22 Tahun 2009, penggunaan lampu isyarat warna biru hanya diperuntukkan bagi kendaraan bermotor petugas Kepolisian Negara Republik Indonesia. Sementara itu, kendaraan ambulans (yang digunakan untuk mengantar orang sakit) diwajibkan menggunakan lampu isyarat berwarna **merah**, bukan biru. Oleh karena itu, kendaraan pribadi tidak diperbolehkan memasang atau menggunakan lampu isyarat berwarna biru."
     },
     {
         "claim": "Pelanggaran lalu lintas yang terekam kamera CCTV tilang elektronik (ETLE) akan langsung mengurangi saldo rekening bank pelanggar.",
-        "prediction": "SALAH",
+        "prediction": "TIDAK CUKUP INFORMASI",
         "label": "TIDAK CUKUP INFORMASI",
-        "explanation": "Label: SALAH\n\nPenjelasan: Berdasarkan dokumen yang diberikan, tidak ada aturan yang menyatakan bahwa saldo rekening bank pelanggar akan langsung terpotong secara otomatis oleh sistem ETLE. Dokumen tersebut hanya menyebutkan bahwa pelanggar *dapat menitipkan* denda kepada bank yang ditunjuk oleh Pemerintah sebagai bentuk pembayaran denda, bukan pemotongan saldo secara otomatis oleh sistem."
+        "explanation": "Hasil: TIDAK CUKUP INFORMASI\n\nPenjelasan: Berdasarkan dokumen yang diberikan, tidak ada pasal yang menyebutkan bahwa pelanggaran lalu lintas yang terekam oleh sistem (seperti ETLE) akan mengakibatkan pengurangan saldo rekening bank pelanggar secara langsung. Dokumen hanya mengatur mengenai mekanisme penitipan uang denda ke bank (Pasal 267) dan penyetoran denda ke kas negara sebagai penerimaan negara bukan pajak (Pasal 269), namun tidak menjelaskan mekanisme pemotongan saldo otomatis dari rekening pribadi pelanggar."
     },
     {
         "claim": "Pengemudi kendaraan bermotor wajib mengutamakan keselamatan pejalan kaki dan pesepeda.",
-        "prediction": "TIDAK CUKUP INFORMASI",
+        "prediction": "BENAR",
         "label": "BENAR",
-        "explanation": "Label: TIDAK CUKUP INFORMASI\n\nPenjelasan: Berdasarkan potongan dokumen UU Nomor 22 Tahun 2009 yang Anda berikan, tidak terdapat pasal atau ayat yang secara spesifik menyebutkan kewajiban pengemudi untuk mengutamakan keselamatan pejalan kaki dan pesepeda. Informasi yang tersedia dalam teks tersebut hanya membahas mengenai kewajiban perbaikan kendaraan terkait emisi, pengawasan lingkungan hidup, syarat belajar mengemudi, serta pengembangan industri dan teknologi kendaraan."
+        "explanation": "Hasil: BENAR\n\nPenjelasan: Berdasarkan potongan dokumen yang diberikan, terdapat pernyataan eksplisit yang berbunyi: \"mengemudikan Kendaraan Bermotor di Jalan wajib mengutamakan keselamatan Pejalan Kaki dan pesepeda.\""
     },
     {
         "claim": "Penggunaan knalpot brong atau bising pada sepeda motor dikenakan denda minimal 5 juta rupiah menurut UU No 22 Tahun 2009.",
-        "prediction": "TIDAK CUKUP INFORMASI",
+        "prediction": "SALAH",
         "label": "SALAH",
-        "explanation": "Label: TIDAK CUKUP INFORMASI\n\nPenjelasan: Dokumen yang disediakan tidak memuat pasal atau ayat yang mengatur mengenai penggunaan knalpot brong/bising serta sanksi denda terkait hal tersebut. Oleh karena itu, klaim mengenai denda minimal 5 juta rupiah tidak dapat diverifikasi berdasarkan konteks dokumen yang diberikan."
+        "explanation": "Hasil: **SALAH**\n\nPenjelasan: Berdasarkan dokumen yang diberikan, tidak ada pasal yang menyebutkan denda sebesar 5 juta rupiah untuk penggunaan knalpot brong atau bising. Dalam Pasal 279, disebutkan bahwa setiap orang yang mengemudikan kendaraan bermotor yang dipasangi perlengkapan yang dapat mengganggu keselamatan berlalu lintas (sebagaimana dimaksud dalam Pasal 58) dipidana dengan pidana kurungan paling lama 2 bulan atau denda paling banyak **Rp500.000,00 (lima ratus ribu rupiah)**."
     },
     {
         "claim": "Pembayaran denda tilang lalu lintas saat ini diwajibkan menggunakan aplikasi dompet digital khusus milik pemerintah.",
         "prediction": "TIDAK CUKUP INFORMASI",
         "label": "TIDAK CUKUP INFORMASI",
-        "explanation": "Label: TIDAK CUKUP INFORMASI\n\nPenjelasan: Dokumen yang disediakan tidak memuat aturan spesifik mengenai metode pembayaran denda tilang, termasuk kewajiban penggunaan aplikasi dompet digital tertentu. Pasal-pasal yang tercantum dalam konteks hanya mengatur mengenai Sistem Informasi dan Komunikasi Lalu Lintas serta pembagian urusan pemerintahan, namun tidak merinci prosedur teknis pembayaran denda."
+        "explanation": "Hasil: TIDAK CUKUP INFORMASI\n\nPenjelasan: Dokumen UU Nomor 22 Tahun 2009 yang disediakan tidak memuat aturan spesifik mengenai kewajiban penggunaan aplikasi dompet digital khusus milik pemerintah untuk pembayaran denda tilang. Dokumen tersebut hanya menyebutkan bahwa uang denda dititipkan kepada bank (Pasal 267 ayat 4) dan disetorkan ke kas negara sebagai penerimaan negara bukan pajak (Pasal 269 ayat 1). Ketentuan teknis operasional lebih lanjut mengenai tata cara pembayaran denda biasanya diatur dalam peraturan pelaksana (seperti peraturan pemerintah atau peraturan Kapolri) yang tidak tercantum secara rinci dalam potongan dokumen yang diberikan."
     }
 ]

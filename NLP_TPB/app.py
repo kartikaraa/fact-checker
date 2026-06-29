@@ -22,7 +22,7 @@ def get_cached_knowledge():
     return text
 
 knowledge_text = get_cached_knowledge()
-tab_checker, tab_eval = st.tabs(["Aplikasi Fact Checker", "Laporan Evaluasi Model"])
+tab_checker, tab_eval = st.tabs(["Fact Checker", "Laporan Evaluasi Model"])
 
 with tab_checker:
     st.subheader("Verifikasi Klaim")

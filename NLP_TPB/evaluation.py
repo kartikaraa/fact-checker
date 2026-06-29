@@ -1,6 +1,7 @@
 import csv
 import os
 import json
+import time
 from rag_pipeline import fact_check_claim, load_knowledge, resolve_knowledge_path
 
 def run_evaluation():
@@ -24,12 +25,20 @@ def run_evaluation():
         print(f"Memproses klaim: {claim}")
         result = fact_check_claim(claim, knowledge_text)
         
-        # Mengekstrak label hasil prediksi (BENAR/SALAH/TIDAK CUKUP INFORMASI)
+        # EKSTRAKSI YANG LEBIH ROBUST (Toleransi improvisasi LLM)
         answer_text = result["answer"]
         prediction = "TIDAK CUKUP INFORMASI"
-        if "Label: BENAR" in answer_text:
+        
+        # 1. Pisahkan bagian jawaban awal dari teks penjelasan panjangnya
+        header_text = answer_text.split("Penjelasan")[0] if "Penjelasan" in answer_text else answer_text
+        
+        # 2. Ubah ke huruf besar semua agar kebal terhadap perbedaan kapitalisasi (benar/BENAR/Benar)
+        header_text = header_text.upper()
+        
+        # 3. Cek keberadaan kata kunci tanpa memedulikan karakter ekstra seperti ** atau :
+        if "BENAR" in header_text:
             prediction = "BENAR"
-        elif "Label: SALAH" in answer_text:
+        elif "SALAH" in header_text:
             prediction = "SALAH"
             
         evaluation_results.append({
@@ -40,6 +49,8 @@ def run_evaluation():
         })
         print(f"PREDIKSI: {prediction} | AKTUAL: {expected_label}")
         print("-" * 60)
+
+        time.sleep(4)
 
     # Simpan hasil evaluasi ke JSON
     output_path = os.path.join("data", "evaluation_results.json")
