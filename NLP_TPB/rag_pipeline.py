@@ -107,7 +107,7 @@ def retrieve_context(claim: str, knowledge_text: str) -> str:
     # Mencari 7 chunk paling relevan berdasarkan semantic similarity
     results = vector_collection.query(
         query_texts=[claim],
-        n_results=7
+        n_results=10
     )
     
     if results["documents"] and len(results["documents"][0]) > 0:

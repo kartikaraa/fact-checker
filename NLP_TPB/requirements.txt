@@ -6,3 +6,5 @@ pypdf>=4.0.0
 chromadb
 pypdf
 torchvision
+rouge 
+ntlk
