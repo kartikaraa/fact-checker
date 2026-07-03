@@ -1,45 +1,96 @@
-import json
-from rag_pipeline import call_gemini
+import os
+import requests
+from dotenv import load_dotenv
 
-def evaluate_qualitative_metrics(claim: str, context: str, answer: str) -> dict:
-    """Menggunakan LLM untuk mengevaluasi dengan skala 1-5 agar lebih realistis."""
-    prompt = f"""Anda adalah juri akademik yang sangat kritis dan pelit nilai.
-Tugas Anda: Evaluasi output sistem berdasarkan 4 kriteria menggunakan SKALA 1 sampai 5 (1=Sangat Buruk, 5=Sempurna).
+load_dotenv()
 
-Kriteria Penilaian:
-1. relevansi: Seberapa langsung jawaban merespons klaim pengguna tanpa bertele-tele?
-2. koherensi: Seberapa luwes, logis, dan rapi tata bahasa yang digunakan? (Kurangi nilai jika bahasanya kaku seperti robot).
-3. factuality: Seberapa akurat fakta di jawaban dibandingkan dengan KONTEKS? (Jika tidak ada nomor pasal, jangan beri nilai 5).
-4. hallucination: Berapa tingkat kebebasan dari halusinasi? (5 = 100% bebas halusinasi, 1 = banyak karangan bebas).
+API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
-KLAIM PENGGUNA: {claim}
-KONTEKS: {context}
-JAWABAN: {answer}
 
-Output WAJIB berupa format JSON murni yang HANYA berisi angka 1, 2, 3, 4, atau 5.
-Contoh format:
+def build_judge_prompt(
+    claim: str,
+    reference_explanation: str,
+    model_answer: str
+) -> str:
+
+    return f"""
+Anda adalah evaluator independen yang bertugas menilai kualitas jawaban sistem fact-checking.
+
+Berikan skor 1 hingga 5 (1=Sangat Buruk, 5=Sangat Baik) untuk 4 metrik berikut: 
+1. Relevansi: Seberapa relevan jawaban dengan klaim? 
+2. Koherensi: Seberapa logis dan mudah dipahami kalimat jawabannya? 
+3. Factuality: Seberapa akurat jawaban mengutip fakta dari konteks dokumen? 
+4. Hallucination: Berikan skor 5 jika TIDAK ADA halusinasi (aman), dan skor 1 jika model mengarang fakta.
+
+Data yang dievaluasi
+
+Klaim:
+{claim}
+
+Jawaban Referensi:
+{reference_explanation}
+
+Jawaban Model:
+{model_answer}
+
+Keluarkan HANYA JSON berikut tanpa markdown dan tanpa penjelasan.
+
 {{
-    "relevansi": 4,
-    "koherensi": 3,
-    "factuality": 5,
-    "hallucination": 5
+    "relevansi": 0,
+    "koherensi": 0,
+    "factuality": 0,
+    "hallucination": 0
 }}
 """
-    response = call_gemini(prompt)
-    
-    try:
-        clean_response = response.replace("```json", "").replace("```", "").strip()
-        scores_1_to_5 = json.loads(clean_response)
-        
-        # Konversi skala 1-5 menjadi skala 0.0 - 1.0 (persentase)
-        # Contoh: Nilai 4 menjadi 4/5 = 0.8 (80%)
-        normalized_scores = {
-            "relevansi": scores_1_to_5.get("relevansi", 0) / 5.0,
-            "koherensi": scores_1_to_5.get("koherensi", 0) / 5.0,
-            "factuality": scores_1_to_5.get("factuality", 0) / 5.0,
-            "hallucination": scores_1_to_5.get("hallucination", 0) / 5.0
+
+
+def evaluate_qualitative_metrics(
+    claim: str,
+    reference_explanation: str,
+    model_answer: str
+) -> str:
+
+    prompt = build_judge_prompt(
+        claim,
+        reference_explanation,
+        model_answer
+    )
+
+    default_json = '{"relevansi":0,"koherensi":0,"factuality":0,"hallucination":0}'
+
+    if not API_KEY or "dummy" in API_KEY.lower() or "example" in API_KEY.lower():
+        return default_json
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={API_KEY}"
+
+    payload = {
+        "contents": [
+            {
+                "parts": [
+                    {
+                        "text": prompt
+                    }
+                ]
+            }
+        ],
+        "generationConfig": {
+            "temperature": 0.0,
+            "maxOutputTokens": 120
         }
-        return normalized_scores
+    }
+
+    try:
+        response = requests.post(url, json=payload, timeout=60)
+
+        if response.status_code != 200:
+            print(response.text)
+            return default_json
+
+        data = response.json()
+
+        return data["candidates"][0]["content"]["parts"][0]["text"]
+
     except Exception as e:
-        print(f"Gagal memparsing JSON: {e}")
-        return {"relevansi": 0, "koherensi": 0, "factuality": 0, "hallucination": 0}
+        print(e)
+        return default_json

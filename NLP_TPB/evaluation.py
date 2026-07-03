@@ -2,8 +2,10 @@ import csv
 import os
 import json
 import time
+import re
+
 from rag_pipeline import fact_check_claim, load_knowledge, resolve_knowledge_path
-from llm_judge import evaluate_qualitative_metrics
+from llm_judge import evaluate_qualitative_metrics 
 
 def run_evaluation():
     knowledge_path = resolve_knowledge_path()
@@ -22,15 +24,16 @@ def run_evaluation():
     for row in rows:
         claim = row["claim"]
         expected_label = row["label"]
-        ref_context = row.get("reference_context", "")
-        ref_explanation = row.get("reference_explanation", "")
+        reference_context = row.get("reference_context", "")
+        reference_explanation = row.get("reference_explanation", "")
         
         print(f"Memproses klaim: {claim}")
+
         result = fact_check_claim(claim, knowledge_text)
-        
         answer_text = result["answer"]
-        prediction = "TIDAK CUKUP INFORMASI"
+        retrieved_context = result["context"]
         
+        prediction = "TIDAK CUKUP INFORMASI"
         header_text = answer_text.split("Penjelasan")[0] if "Penjelasan" in answer_text else answer_text
         header_text = header_text.upper()
         
@@ -39,27 +42,58 @@ def run_evaluation():
         elif "SALAH" in header_text:
             prediction = "SALAH"
             
-        print("Menjalankan LLM-as-a-Judge untuk evaluasi kualitatif (Relevansi, Koherensi, Factuality, Hallucination)...")
-        qualitative_scores = evaluate_qualitative_metrics(claim, result["context"], answer_text)
+        print(f"PREDIKSI: {prediction} | AKTUAL: {expected_label}")
+        
+        print("Menjalankan LLM-as-a-Judge untuk evaluasi kualitatif...")
+        
+        llm_judge_output = evaluate_qualitative_metrics(
+            claim,
+            reference_explanation,
+            answer_text
+        )
+        
+        skor_kualitatif = {'relevansi': 0, 'koherensi': 0, 'factuality': 0, 'hallucination': 0}
+        
+        try:
+            clean_text = re.sub(r"```(?:json)?\s*", "", llm_judge_output, flags=re.IGNORECASE)
+            clean_text = re.sub(r"\s*```", "", clean_text)
+            clean_text = clean_text.strip()
+
+            json_match = re.search(r'\{.*\}', clean_text, re.DOTALL)
+            if json_match:
+                clean_text = json_match.group(0)
+
+            skor_kualitatif = json.loads(clean_text)
+        except Exception as e:
+            print(f"Gagal memparsing JSON. Output asli LLM:\n{llm_judge_output}")
+            print(f"Error detail: {e}")
+
+        print(f"Skor Kualitatif: {skor_kualitatif}")
+        print("-" * 60)
             
+        norm_relevansi = skor_kualitatif.get("relevansi", 0) / 5.0
+        norm_koherensi = skor_kualitatif.get("koherensi", 0) / 5.0
+        norm_factuality = skor_kualitatif.get("factuality", 0) / 5.0
+        norm_hallucination = skor_kualitatif.get("hallucination", 0) / 5.0
+
         evaluation_results.append({
             "claim": claim,
             "prediction": prediction,
             "label": expected_label,
             "explanation": answer_text,
-            "retrieved_context": result["context"],
-            "reference_context": ref_context,
-            "reference_explanation": ref_explanation,
-            "relevansi": qualitative_scores.get("relevansi", 0),
-            "koherensi": qualitative_scores.get("koherensi", 0),
-            "factuality": qualitative_scores.get("factuality", 0),
-            "hallucination": qualitative_scores.get("hallucination", 0)
+            "retrieved_context": retrieved_context,
+            "reference_context": reference_context,
+            "reference_explanation": reference_explanation,
+            "qualitative_metrics": skor_kualitatif, 
+            
+            "relevansi": norm_relevansi,
+            "koherensi": norm_koherensi,
+            "factuality": norm_factuality,
+            "hallucination": norm_hallucination,
+            "bebas_halusinasi": norm_hallucination,
         })
         
-        print(f"PREDIKSI: {prediction} | AKTUAL: {expected_label}")
-        print(f"Skor Kualitatif: {qualitative_scores}")
-        print("-" * 60)
-        time.sleep(4)
+        time.sleep(5)
 
     output_path = os.path.join("data", "evaluation_results.json")
     os.makedirs("data", exist_ok=True)

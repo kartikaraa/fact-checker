@@ -17,16 +17,13 @@ load_dotenv()
 API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
-# 1. Inisialisasi Multilingual Embedding
 sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
     model_name="paraphrase-multilingual-MiniLM-L12-v2"
 )
 
-# 2. Inisialisasi Persistent Database ChromaDB
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 collection_name = "uu_lalu_lintas"
 
-# 3. Ambil atau Buat Koleksi Vektor
 vector_collection = chroma_client.get_or_create_collection(
     name=collection_name, 
     embedding_function=sentence_transformer_ef
@@ -104,7 +101,6 @@ def retrieve_context(claim: str, knowledge_text: str) -> str:
     """Mengambil konteks menggunakan Vector Search (Cosine Similarity)."""
     populate_vector_db(knowledge_text)
     
-    # Mencari 7 chunk paling relevan berdasarkan semantic similarity
     results = vector_collection.query(
         query_texts=[claim],
         n_results=10
@@ -140,13 +136,21 @@ def call_gemini(prompt: str) -> str:
         return "API key Gemini belum valid atau belum diisi. Sistem akan menjalankan mode demo berbasis aturan sederhana."
 
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={API_KEY}"
+    
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
             "temperature": 0.1,
             "maxOutputTokens": 250
-        }
+        },
+        "safetySettings": [
+            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}
+        ]
     }
+    
     response = requests.post(url, json=payload, timeout=60)
     if response.status_code != 200:
         return f"Error API Gemini: {response.status_code} - {response.text}"
